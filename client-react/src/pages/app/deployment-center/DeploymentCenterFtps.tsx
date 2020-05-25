@@ -10,15 +10,10 @@ import CustomBanner from '../../../components/CustomBanner/CustomBanner';
 import { DeploymentCenterContext } from './DeploymentCenterContext';
 import CustomFocusTrapCallout from '../../../components/CustomCallout/CustomFocusTrapCallout';
 
-type PasswordFieldType = 'password' | undefined;
-
 const DeploymentCenterFtps: React.FC<DeploymentCenterFtpsProps> = props => {
   const { t } = useTranslation();
-  const { publishingProfile, publishingUser, resetApplicationPassword } = props;
+  const { publishingProfile, publishingUser, resetApplicationPassword, formProps } = props;
 
-  const [applicationPasswordType, setApplicationPasswordType] = useState<PasswordFieldType>('password');
-  const [providerPasswordType, setProviderPasswordType] = useState<PasswordFieldType>('password');
-  const [providerConfirmPasswordType, setProviderConfirmPasswordType] = useState<PasswordFieldType>('password');
   const [isResetCalloutHidden, setIsResetCalloutHidden] = useState<boolean>(true);
 
   const ftpsEndpoint = publishingProfile && publishingProfile.publishUrl.toLocaleLowerCase().replace('ftp:/', 'ftps:/');
@@ -44,18 +39,6 @@ const DeploymentCenterFtps: React.FC<DeploymentCenterFtpsProps> = props => {
   const resetApplicationPasswordFromCallout = () => {
     resetApplicationPassword();
     setIsResetCalloutHidden(true);
-  };
-
-  const toggleShowApplicationPassword = () => {
-    setApplicationPasswordType(!applicationPasswordType ? 'password' : undefined);
-  };
-
-  const toggleShowProviderPassword = () => {
-    setProviderPasswordType(!providerPasswordType ? 'password' : undefined);
-  };
-
-  const toggleShowProviderConfirmPassword = () => {
-    setProviderConfirmPasswordType(!providerConfirmPasswordType ? 'password' : undefined);
   };
 
   return (
@@ -93,19 +76,8 @@ const DeploymentCenterFtps: React.FC<DeploymentCenterFtpsProps> = props => {
         value={publishingProfile && publishingProfile.userPWD}
         copyButton={true}
         disabled={true}
-        type={applicationPasswordType}
+        hideShowButton={{}}
         additionalControls={[
-          <ActionButton
-            id="deployment-center-ftps-application-password-visibility-toggle"
-            key="deployment-center-ftps-application-password-visibility-toggle"
-            className={additionalTextFieldControl}
-            ariaLabel={
-              applicationPasswordType === 'password' ? t('showApplicationPasswordAriaLabel') : t('hideApplicationPasswordAriaLabel')
-            }
-            onClick={toggleShowApplicationPassword}
-            iconProps={{ iconName: applicationPasswordType === 'password' ? 'RedEye' : 'Hide' }}>
-            {applicationPasswordType === 'password' ? t('show') : t('hide')}
-          </ActionButton>,
           <ActionButton
             id="deployment-center-ftps-application-password-reset"
             key="deployment-center-ftps-application-password-reset"
@@ -138,7 +110,7 @@ const DeploymentCenterFtps: React.FC<DeploymentCenterFtpsProps> = props => {
         id="deployment-center-ftps-provider-username"
         name="publishingUsername"
         component={TextField}
-        widthOverride="60%"
+        widthOverride="100%"
         label={t('deploymentCenterFtpsUsernameLabel')}
       />
 
@@ -146,44 +118,18 @@ const DeploymentCenterFtps: React.FC<DeploymentCenterFtpsProps> = props => {
         id="deployment-center-ftps-provider-password"
         name="publishingPassword"
         component={TextField}
-        widthOverride="60%"
+        widthOverride="100%"
         label={t('deploymentCenterFtpsPasswordLabel')}
-        type={providerPasswordType}
-        additionalControls={[
-          <ActionButton
-            id="deployment-center-ftps-provider-password-visibility-toggle"
-            key="deployment-center-ftps-provider-password-visibility-toggle"
-            className={additionalTextFieldControl}
-            ariaLabel={providerPasswordType === 'password' ? t('showProviderPasswordAriaLabel') : t('hideProviderPasswordAriaLabel')}
-            onClick={toggleShowProviderPassword}
-            iconProps={{ iconName: providerPasswordType === 'password' ? 'RedEye' : 'Hide' }}>
-            {providerPasswordType === 'password' ? t('show') : t('hide')}
-          </ActionButton>,
-        ]}
+        hideShowButton={{ emptyDefaultValue: !formProps || !formProps.values.publishingPassword }}
       />
 
       <Field
         id="deployment-center-ftps-provider-confirm-password"
         name="publishingConfirmPassword"
         component={TextField}
-        widthOverride="60%"
+        widthOverride="100%"
         label={t('deploymentCenterFtpsConfirmPasswordLabel')}
-        type={providerConfirmPasswordType}
-        additionalControls={[
-          <ActionButton
-            id="deployment-center-ftps-provider-confirm-password-visibility-toggle"
-            key="deployment-center-ftps-provider-confirm-password-visibility-toggle"
-            className={additionalTextFieldControl}
-            ariaLabel={
-              providerConfirmPasswordType === 'password'
-                ? t('showProviderConfirmPasswordAriaLabel')
-                : t('hideProviderConfirmPasswordAriaLabel')
-            }
-            onClick={toggleShowProviderConfirmPassword}
-            iconProps={{ iconName: providerConfirmPasswordType === 'password' ? 'RedEye' : 'Hide' }}>
-            {providerConfirmPasswordType === 'password' ? t('show') : t('hide')}
-          </ActionButton>,
-        ]}
+        hideShowButton={{ emptyDefaultValue: !formProps || !formProps.values.publishingConfirmPassword }}
       />
     </div>
   );

@@ -23,6 +23,7 @@ interface CustomTextFieldProps {
   additionalControls?: JSX.Element[];
   hideShowButton?: {
     onButtonClick?: (hidden: boolean) => void;
+    emptyDefaultValue?: boolean;
   };
 }
 const TextFieldNoFormik: FC<ITextFieldProps & CustomTextFieldProps> = props => {
@@ -110,12 +111,16 @@ const TextFieldNoFormik: FC<ITextFieldProps & CustomTextFieldProps> = props => {
     );
   };
 
+  const getDefaultHiddenValue = (emptyDefaultValue?: boolean) => {
+    return emptyDefaultValue ? '' : CommonConstants.getDefaultHiddenValue(value);
+  };
+
   return (
     <ReactiveFormControl {...props}>
       <OfficeTextField
         id={id}
         aria-labelledby={`${id}-label`}
-        value={hideShowButton && hidden ? CommonConstants.DefaultHiddenValue : value || ''}
+        value={hideShowButton && hidden ? getDefaultHiddenValue(hideShowButton.emptyDefaultValue) : value || ''}
         tabIndex={0}
         onChange={onChange}
         onBlur={onBlur}

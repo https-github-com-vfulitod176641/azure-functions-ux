@@ -188,7 +188,7 @@ export class CommonConstants {
     usSec: 'https://management.azure.microsoft.scloud',
   };
 
-  public static readonly DefaultHiddenValue = '******';
+  public static getDefaultHiddenValue = (value?: string) => '*'.repeat(!!value ? value.length : 5);
 
   public static isKeyVaultReference = (value: string) => value.toLocaleLowerCase().startsWith('@microsoft.keyvault(');
 }
