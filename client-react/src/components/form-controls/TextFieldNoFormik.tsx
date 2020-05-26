@@ -124,13 +124,8 @@ const TextFieldNoFormik: FC<ITextFieldProps & CustomTextFieldProps> = props => {
         value={hideShowButton && hidden ? getDefaultHiddenValue(hideShowButton.emptyDefaultValue) : newValue || ''}
         tabIndex={0}
         onChange={(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, value?: string) => {
-          let updatedValue = value;
-          if (!newValue) {
-            setNewValue(updatedValue);
-          } else {
-            updatedValue = `${newValue}${!!value ? value[value.length - 1] : ''}`;
-            setNewValue(updatedValue);
-          }
+          const updatedValue = `${newValue || ''}${!!value ? value[value.length - 1] : ''}`;
+          setNewValue(updatedValue);
           if (onChange) {
             onChange(event, updatedValue);
           }
