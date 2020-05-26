@@ -48,12 +48,13 @@ const TextFieldNoFormik: FC<ITextFieldProps & CustomTextFieldProps> = props => {
 
   const [copied, setCopied] = useState(false);
   const [hidden, setHidden] = useState(!!hideShowButton);
+  const [newValue, setNewValue] = useState<string | undefined>(value);
 
   const copyToClipboard = (e: React.MouseEvent<any>) => {
     if (!!e) {
       e.stopPropagation();
     }
-    TextUtilitiesService.copyContentToClipboard(value || '');
+    TextUtilitiesService.copyContentToClipboard(newValue || '');
     setCopied(true);
   };
 
@@ -112,7 +113,7 @@ const TextFieldNoFormik: FC<ITextFieldProps & CustomTextFieldProps> = props => {
   };
 
   const getDefaultHiddenValue = (emptyDefaultValue?: boolean) => {
-    return emptyDefaultValue ? '' : CommonConstants.getDefaultHiddenValue(value);
+    return emptyDefaultValue ? '' : CommonConstants.getDefaultHiddenValue(newValue);
   };
 
   return (
@@ -120,9 +121,20 @@ const TextFieldNoFormik: FC<ITextFieldProps & CustomTextFieldProps> = props => {
       <OfficeTextField
         id={id}
         aria-labelledby={`${id}-label`}
-        value={hideShowButton && hidden ? getDefaultHiddenValue(hideShowButton.emptyDefaultValue) : value || ''}
+        value={hideShowButton && hidden ? getDefaultHiddenValue(hideShowButton.emptyDefaultValue) : newValue || ''}
         tabIndex={0}
-        onChange={onChange}
+        onChange={(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, value?: string) => {
+          let updatedValue = value;
+          if (!newValue) {
+            setNewValue(updatedValue);
+          } else {
+            updatedValue = `${newValue}${!!value ? value[value.length - 1] : ''}`;
+            setNewValue(updatedValue);
+          }
+          if (onChange) {
+            onChange(event, updatedValue);
+          }
+        }}
         onBlur={onBlur}
         errorMessage={errorMessage}
         styles={textFieldStyleOverrides(theme, fullpage, widthOverride)}
