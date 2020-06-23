@@ -80,6 +80,7 @@ const Configuration: React.FC<ConfigurationProps> = props => {
   const [isOnChangeConfirmDialogVisible, setIsOnChangeConfirmDialogVisible] = useState(false);
   const [onChangeEnvironment, setOnChangeEnvironment] = useState<ArmObj<Environment> | undefined>(undefined);
   const [isRefreshConfirmDialogVisible, setIsRefreshConfirmDialogVisible] = useState(false);
+  const [columns, setColumns] = useState<IColumn[]>([]);
 
   const { t } = useTranslation();
 
@@ -255,6 +256,8 @@ const Configuration: React.FC<ConfigurationProps> = props => {
         data: 'string',
         isPadded: true,
         isResizable: true,
+        isSorted: true,
+        isSortedDescending: false,
         onRender: onRenderColumnItem,
       },
       {
@@ -445,6 +448,11 @@ const Configuration: React.FC<ConfigurationProps> = props => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedEnvironmentVariableResponse]);
+  useEffect(() => {
+    setColumns(getColumns());
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <>
       <div className={commandBarSticky}>
@@ -530,7 +538,7 @@ const Configuration: React.FC<ConfigurationProps> = props => {
         />
         <DisplayTableWithCommandBar
           commandBarItems={getCommandBarItems()}
-          columns={getColumns()}
+          columns={columns}
           items={environmentVariables.filter(environmentVariable => {
             if (!filter) {
               return true;
