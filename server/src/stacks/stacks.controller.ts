@@ -1,4 +1,4 @@
-import { Controller, Query, HttpException, Post } from '@nestjs/common';
+import { Controller, Query, HttpException, Post, Body } from '@nestjs/common';
 import { Versions, WebAppVersions, FunctionAppVersions } from './versions';
 import { FunctionAppStacksService20200501 } from './functionapp/2020-05-01/stacks.service';
 import { WebAppStacksService20200501 } from './webapp/2020-05-01/stacks.service';
@@ -62,6 +62,20 @@ export class StacksController {
 
     if (apiVersion === Versions.version20200601) {
       return this._stackWebAppService20200601.getStacks(os);
+    }
+  }
+
+  @Post('webAppStacksOnPrem')
+  async webAppStacksOnPrem(
+    @Body('authToken') authToken: string,
+    @Query('api-version') apiVersion: string,
+    @Query('os') os?: 'linux' | 'windows'
+  ) {
+    this._validateApiVersion(apiVersion, [Versions.version20200601]);
+    this._validateOs(os);
+
+    if (apiVersion === Versions.version20200601) {
+      return this._stackWebAppService20200601.getOnPremStacks(authToken, os);
     }
   }
 
